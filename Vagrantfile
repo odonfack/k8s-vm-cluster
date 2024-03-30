@@ -5,10 +5,12 @@
 # If this number is changed, remember to update setup-hosts.sh script with the new hosts IP details in /etc/hosts of each VM.
 NUM_MASTER_NODE = 1
 NUM_WORKER_NODE = 2
+NUM_MGMT_NODE = 1
 
 IP_NW = "192.168.56."
 MASTER_IP_START = 110
 NODE_IP_START = 200
+MGMT_IP_START = 105
 
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/bionic64"
@@ -51,6 +53,29 @@ Vagrant.configure("2") do |config|
         node.vm.hostname = "kubenode0#{i}"
         node.vm.network :private_network, ip: IP_NW + "#{NODE_IP_START + i}"
                 node.vm.network "forwarded_port", guest: 22, host: "#{2720 + i}"
+
+        node.vm.provision "setup-hosts", :type => "shell", :path => "ubuntu/vagrant/setup-hosts.sh" do |s|
+          s.args = ["enp0s8"]
+        end
+
+        node.vm.provision "setup-dns", type: "shell", :path => "ubuntu/update-dns.sh"
+
+        node.vm.provision "copy_public_key", type: "file", source: "ubuntu/vagrant/my_key.pub", destination: "/tmp/my_key.pub"
+        node.vm.provision  "update_public_key", type: "shell", inline: "cat /tmp/my_key.pub > /home/ubuntu/.ssh/authorized_keys"
+
+    end
+  end
+  # Provision Management Nodes
+  (1..NUM_MGMT_NODE).each do |i|
+    config.vm.define "kubemgmt#{i}" do |node|
+        node.vm.provider "virtualbox" do |vb|
+            vb.name = "kubemgmt#{i}"
+            vb.memory = 2048
+            vb.cpus = 2
+        end
+        node.vm.hostname = "kubemgmt#{i}"
+        node.vm.network :private_network, ip: IP_NW + "#{MGMT_IP_START + i}"
+                node.vm.network "forwarded_port", guest: 22, host: "#{2705 + i}"
 
         node.vm.provision "setup-hosts", :type => "shell", :path => "ubuntu/vagrant/setup-hosts.sh" do |s|
           s.args = ["enp0s8"]
