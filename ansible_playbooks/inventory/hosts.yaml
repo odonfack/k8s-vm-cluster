@@ -14,3 +14,8 @@ all:
         kubenode02:
           ansible_host: 192.168.0.244
 
+    mgmt:
+      hosts:
+        kubemgmt1:
+          ansible_host: 192.168.0.240
+
