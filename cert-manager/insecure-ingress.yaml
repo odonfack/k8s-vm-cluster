@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-ingress
+  namespace: my-app
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: donaph.ddns.net
+    http:
+      paths:
+        - path: /hello(/|$)(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: hello-service
+              port: 
+                number: 5678
+        - path: /welcome(/|$)(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: welcome-service
+              port: 
+                number: 5678
