@@ -11,13 +11,13 @@
   block:
     - name: Downloading Kubernetes archive keyring
       ansible.builtin.get_url:
-        url: https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key
+        url: https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key
         dest: /usr/share/keyrings/kubernetes-archive-keyring.asc
         mode: '0755'
 
     - name: Adding kubernetes repository
       ansible.builtin.apt_repository:
-        repo: "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.asc] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /"
+        repo: "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.asc] https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /"
         state: present
         filename: kubernetes
 

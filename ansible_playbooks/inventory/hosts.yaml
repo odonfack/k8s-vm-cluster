@@ -5,17 +5,17 @@ all:
     master:
       hosts:
         kubemaster:
-          ansible_host: 192.168.0.241
+          ansible_host: 192.168.56.241
 
     worker:
       hosts:
         kubenode01:
-          ansible_host: 192.168.0.243
+          ansible_host: 192.168.56.243
         kubenode02:
-          ansible_host: 192.168.0.244
+          ansible_host: 192.168.56.244
 
     mgmt:
       hosts:
         kubemgmt1:
-          ansible_host: 192.168.0.240
+          ansible_host: 192.168.56.240
 
